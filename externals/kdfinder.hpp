@@ -2565,6 +2565,9 @@ std::vector<TrackCandidate<T>*> get_track_candidates( std::vector<std::vector<st
 		trk->refit();
 		if ( trk->isFitted() ) {
 			candidates.emplace_back( trk );
+		} else {
+			delete trk;
+			trk = 0;
 		}
 	}
 

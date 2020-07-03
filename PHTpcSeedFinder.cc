@@ -51,7 +51,11 @@ std::vector<kdfinder::TrackCandidate<double>*> PHTpcSeedFinder::findSeeds(TrkrCl
 
     //----- filter out junk = bad tracks, <25 MeV Pt tracks etc.. -----
     for ( auto it = result.begin(); it != result.end(); ) {
-        if ( !(*it)->isFitted() || (*it)->Pt() < 0.025 || (*it)->Pt() > 200.0 ) { (*it)->deleteHits(); it = result.erase(it); } else { ++it; }
+        if ( !(*it)->isFitted() || (*it)->Pt() < 0.025 || (*it)->Pt() > 200.0 ) { 
+					(*it)->deleteHits();
+					delete (*it);
+					it = result.erase(it);
+				} else { ++it; }
     }
 	LOG_DEBUG("tracking.PHTpcSeedFinder.findSeeds") << "kdtrack candidates after filtering: " << result.size();
 
@@ -61,7 +65,9 @@ std::vector<kdfinder::TrackCandidate<double>*> PHTpcSeedFinder::findSeeds(TrkrCl
 			kdfinder::Circle<double>* c = (*it)->getCircleFit();
 			double x = c->a, y = c->b, r = c->r, xyr = std::sqrt( x*x + y*y );
 			if ( ( ( xyr - r ) > mMinLooperRadius ) && ( ( xyr + r ) < mMaxLooperRadius ) ) {
-				(*it)->deleteHits(); it = result.erase(it);
+				(*it)->deleteHits(); 
+				delete (*it);
+				it = result.erase(it);
 			} else { ++it; }
 		}
 	}
